@@ -12,7 +12,7 @@ from typing import Dict, Any
 
 # Set up paths
 sys.path.append('/app')
-os.environ['HF_HOME'] = os.path.join(os.path.dirname(__file__), 'hf_download')
+os.environ['HF_HOME'] = '/app/hf_download'
 
 import torch
 import numpy as np
