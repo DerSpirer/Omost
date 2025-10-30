@@ -1,0 +1,216 @@
+{
+  "title": "Omost - LLM-Powered Image Generation",
+  "description": "Omost converts LLM's coding capability to image generation capability. Uses Llama3/Phi3 models to generate code for image composition with a virtual Canvas, rendered by Stable Diffusion XL.",
+  "type": "serverless",
+  "category": "image",
+  "iconUrl": "https://raw.githubusercontent.com/lllyasviel/Omost/main/icon.png",
+  "config": {
+    "runsOn": "GPU",
+    "containerDiskInGb": 40,
+    "gpuCount": 1,
+    "gpuIds": "NVIDIA RTX A4000,NVIDIA RTX A5000,NVIDIA RTX A6000,NVIDIA GeForce RTX 4090,NVIDIA L40,NVIDIA A40",
+    "allowedCudaVersions": [
+      "12.8",
+      "12.7",
+      "12.6",
+      "12.5",
+      "12.4",
+      "12.3",
+      "12.2",
+      "12.1",
+      "12.0"
+    ],
+    "presets": [
+      {
+        "name": "Quality (Llama3-8B)",
+        "defaults": {
+          "LLM_MODEL": "lllyasviel/omost-llama-3-8b-4bits",
+          "SDXL_MODEL": "SG161222/RealVisXL_V4.0",
+          "DEFAULT_STEPS": 25,
+          "DEFAULT_CFG": 5.0,
+          "MAX_NEW_TOKENS": 4096
+        }
+      },
+      {
+        "name": "Uncensored (Dolphin Llama3)",
+        "defaults": {
+          "LLM_MODEL": "lllyasviel/omost-dolphin-2.9-llama3-8b-4bits",
+          "SDXL_MODEL": "SG161222/RealVisXL_V4.0",
+          "DEFAULT_STEPS": 25,
+          "DEFAULT_CFG": 5.0,
+          "MAX_NEW_TOKENS": 4096
+        }
+      },
+      {
+        "name": "Compact (Phi3-Mini)",
+        "defaults": {
+          "LLM_MODEL": "lllyasviel/omost-phi-3-mini-128k-8bits",
+          "SDXL_MODEL": "SG161222/RealVisXL_V4.0",
+          "DEFAULT_STEPS": 25,
+          "DEFAULT_CFG": 5.0,
+          "MAX_NEW_TOKENS": 4096
+        }
+      }
+    ],
+    "env": [
+      {
+        "key": "HF_TOKEN",
+        "input": {
+          "name": "Hugging Face Token",
+          "type": "string",
+          "description": "Your Hugging Face access token (optional, required for gated models)",
+          "default": "",
+          "advanced": false
+        }
+      },
+      {
+        "key": "LLM_MODEL",
+        "input": {
+          "name": "LLM Model",
+          "type": "string",
+          "description": "Omost LLM model to use for generating image composition code",
+          "options": [
+            {
+              "label": "Llama3-8B (4-bit) - Recommended",
+              "value": "lllyasviel/omost-llama-3-8b-4bits"
+            },
+            {
+              "label": "Llama3-8B (Full Precision)",
+              "value": "lllyasviel/omost-llama-3-8b"
+            },
+            {
+              "label": "Dolphin Llama3-8B (4-bit) - Uncensored",
+              "value": "lllyasviel/omost-dolphin-2.9-llama3-8b-4bits"
+            },
+            {
+              "label": "Dolphin Llama3-8B (Full Precision) - Uncensored",
+              "value": "lllyasviel/omost-dolphin-2.9-llama3-8b"
+            },
+            {
+              "label": "Phi3-Mini (8-bit) - Compact",
+              "value": "lllyasviel/omost-phi-3-mini-128k-8bits"
+            },
+            {
+              "label": "Phi3-Mini (Full Precision)",
+              "value": "lllyasviel/omost-phi-3-mini-128k"
+            }
+          ],
+          "default": "lllyasviel/omost-llama-3-8b-4bits"
+        }
+      },
+      {
+        "key": "SDXL_MODEL",
+        "input": {
+          "name": "SDXL Model",
+          "type": "string",
+          "description": "Stable Diffusion XL model for image generation",
+          "default": "SG161222/RealVisXL_V4.0",
+          "advanced": false
+        }
+      },
+      {
+        "key": "DEFAULT_IMAGE_WIDTH",
+        "input": {
+          "name": "Default Image Width",
+          "type": "number",
+          "description": "Default width for generated images (must be multiple of 64)",
+          "min": 256,
+          "max": 2048,
+          "default": 896
+        }
+      },
+      {
+        "key": "DEFAULT_IMAGE_HEIGHT",
+        "input": {
+          "name": "Default Image Height",
+          "type": "number",
+          "description": "Default height for generated images (must be multiple of 64)",
+          "min": 256,
+          "max": 2048,
+          "default": 1152
+        }
+      },
+      {
+        "key": "DEFAULT_STEPS",
+        "input": {
+          "name": "Default Sampling Steps",
+          "type": "number",
+          "description": "Number of denoising steps for image generation",
+          "min": 1,
+          "max": 100,
+          "default": 25
+        }
+      },
+      {
+        "key": "DEFAULT_CFG",
+        "input": {
+          "name": "Default CFG Scale",
+          "type": "number",
+          "description": "Classifier-free guidance scale",
+          "min": 1.0,
+          "max": 20.0,
+          "default": 5.0
+        }
+      },
+      {
+        "key": "TEMPERATURE",
+        "input": {
+          "name": "LLM Temperature",
+          "type": "number",
+          "description": "Temperature for LLM text generation (higher = more creative)",
+          "min": 0.0,
+          "max": 2.0,
+          "default": 0.6,
+          "advanced": true
+        }
+      },
+      {
+        "key": "TOP_P",
+        "input": {
+          "name": "LLM Top P",
+          "type": "number",
+          "description": "Top-p sampling for LLM",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.9,
+          "advanced": true
+        }
+      },
+      {
+        "key": "MAX_NEW_TOKENS",
+        "input": {
+          "name": "Max New Tokens",
+          "type": "number",
+          "description": "Maximum tokens for LLM to generate",
+          "min": 128,
+          "max": 4096,
+          "default": 4096,
+          "advanced": true
+        }
+      },
+      {
+        "key": "NEGATIVE_PROMPT",
+        "input": {
+          "name": "Default Negative Prompt",
+          "type": "string",
+          "description": "Default negative prompt for image generation",
+          "default": "lowres, bad anatomy, bad hands, cropped, worst quality",
+          "advanced": true
+        }
+      },
+      {
+        "key": "ENABLE_HIGHRES_FIX",
+        "input": {
+          "type": "boolean",
+          "name": "Enable Highres Fix",
+          "description": "Enable high-resolution fix for better image quality",
+          "default": false,
+          "trueValue": "true",
+          "falseValue": "false",
+          "advanced": true
+        }
+      }
+    ]
+  }
+}
+
